@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Full Stack Development | XpertChamps</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 30px;
+            font-weight: 800;
+        }
+        .logo-x { color: #333; }
+        .logo-pert { color: #FFA500; }
+        .logo-champs { color: #003366; }
+
+        .tagline {
+            font-size: 12px;
+            color: #800080;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: -5px;
+        }
+
+        /* Course Main Title */
+        .course-hero {
+            text-align: center;
+            margin-top: 100px;
+            margin-bottom: 10px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+        .course-hero h1 {
+            color: #003366;
+            font-size: 36px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .course-hero p {
+            color: #555;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        /* Journey Container */
+        .journey-container {
+            position: relative;
+            padding: 50px 20px 100px;
+            min-height: 200vh;
+        }
+
+        /* The Train Track */
+        .track {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 100%;
+            background: #757575;
+            z-index: 1;
+        }
+
+        /* Railway Sleepers */
+        .track::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -12px;
+            width: 30px;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                #5d4037 20px,
+                #5d4037 25px
+            );
+            z-index: -1;
+        }
+
+        /* The Train */
+        .train {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -20px);
+            z-index: 10;
+            font-size: 30px;
+            transition: top 0.05s linear;
+            animation: shake 0.1s infinite alternate;
+        }
+
+        @keyframes shake {
+            from { transform: translate(-50%, -20px) rotate(-1deg); }
+            to { transform: translate(-50%, -22px) rotate(1deg); }
+        }
+
+        /* Stations (Weeks) */
+        .station {
+            position: relative;
+            margin-bottom: 100px;
+            width: 40%;
+            z-index: 5;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .station.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .station:nth-child(odd) {
+            margin-left: 5%;
+            text-align: right;
+        }
+        .station:nth-child(even) {
+            margin-left: 55%;
+            text-align: left;
+        }
+
+        .station-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border-top: 5px solid #003366;
+        }
+
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Connecting Line */
+        .station::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 30px;
+            height: 2px;
+            background: #757575;
+        }
+        .station:nth-child(odd)::before {
+            right: -35px;
+        }
+        .station:nth-child(even)::before {
+            left: -35px;
+        }
+
+        /* Station Marker */
+        .station-marker {
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border: 3px solid #d32f2f;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .station-card h3 {
+            margin: 0 0 10px 0;
+            color: #003366;
+            font-size: 18px;
+        }
+
+        .station-card p {
+            margin: 0;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Month Badges */
+        .month-badge {
+            position: relative;
+            text-align: center;
+            margin: 50px 0 20px;
+            z-index: 2;
+        }
+        .month-title {
+            display: inline-block;
+            background: #003366;
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Expanded Content */
+        .syllabus-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            text-align: left;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .syllabus-details.open {
+            max-height: 1000px;
+            padding-top: 15px;
+        }
+        .day-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+        .day-row:last-child { border-bottom: none; }
+        
+        .day-badge {
+            background: #FFA500;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-right: 10px;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        .day-badge.more {
+            background: #003366;
+            min-width: 35px;
+        }
+        .highlight-text {
+            font-weight: bold;
+            color: #003366;
+        }
+
+        /* ANIMATED POPUP STYLE */
+        .promo-popup {
+            position: fixed;
+            bottom: 90px; /* Sits above the button */
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0; /* Start hidden */
+            transform: scale(0.5) translateY(50px);
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border-top: 6px solid #FFA500;
+            overflow: hidden;
+        }
+
+        .promo-popup.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            visibility: visible;
+            animation: popBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popBounce {
+            0% { transform: scale(0.5) translateY(50px); }
+            60% { transform: scale(1.1) translateY(-10px); }
+            80% { transform: scale(0.95) translateY(5px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        .popup-header {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .popup-header h3 {
+            margin: 0;
+            color: #003366;
+            font-size: 16px;
+        }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+            transition: background 0.2s;
+        }
+        .popup-close:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .popup-body {
+            padding: 15px;
+        }
+        .popup-body p {
+            margin-top: 0;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+        .benefit-list li {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .benefit-list li span {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .popup-footer {
+            text-align: center;
+            padding: 10px 15px 15px;
+            font-size: 12px;
+            color: #888;
+            font-weight: bold;
+        }
+        
+        /* Floating Footer Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+        .pulse-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.5);
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .track { left: 20px; }
+            .station { width: 75%; margin-left: 15% !important; text-align: left !important; }
+            .station::before { left: -25px; right: auto; width: 15px; }
+            .station-marker { left: 20px; }
+            .train { left: 20px; }
+            .course-hero { margin-top: 90px; }
+            .course-hero h1 { font-size: 26px; }
+            
+            .promo-popup {
+                right: 10px;
+                width: calc(100% - 20px);
+                bottom: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <div class="logo">
+                <span class="logo-x">X</span><span class="logo-pert">pert</span><span class="logo-champs">Champs</span>
+            </div>
+            <div class="tagline">From Learning to Leading</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: bold; color: #d32f2f; font-size: 20px;">₹999/- Only</div>
+            <div style="font-size: 12px; color: #666;">📞 9492321556</div>
+        </div>
+    </header>
+
+    <!-- Course Hero Section -->
+    <div class="course-hero">
+        <h1>Python Full Stack Development</h1>
+        <p>10 Weeks Roadmap to Mastery</p>
+    </div>
+
+    <div class="journey-container" id="journey">
+        
+        <div class="track"></div>
+        <div class="train" id="train">🚂</div>
+
+        <!-- Module 1 -->
+        <div class="month-badge"><div class="month-title">Module 1: Frontend Development</div></div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 1: HTML</h3>
+                <p>Web Structure Fundamentals</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Introduction to Web & Full Stack</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Structure of HTML, Tags, Elements</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Headings, Paragraphs, Formatting</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Lists, Links, Images, Tables</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Forms & Input Types</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 2: HTML + Mini Project</h3>
+                <p>Semantic Layouts</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Semantic Tags & Layout Structuring</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Audio, Video, iFrame</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Form Validation Basics</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Multi-page Website Linking</div>
+                    <div class="day-row"><div class="day-badge">Project</div> Static College / Personal Website</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 3: CSS</h3>
+                <p>Styling & Design</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Introduction to CSS & Selectors</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Colors, Background, Box Model</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Margin, Padding, Border</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Display, Position, Flexbox</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Styling Forms & Buttons</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 4: CSS + Mini Project</h3>
+                <p>Responsive Design</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Hover Effects & Transitions</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Animations</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Responsive Design & Combinators</div>
+                    <div class="day-row"><div class="day-badge">Project</div> Responsive Portfolio Website</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="month-badge"><div class="month-title">Module 2: Backend Development</div></div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 5: Python Basics</h3>
+                <p>Programming Fundamentals</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Introduction to Python</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Variables & Data Types</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Operators & Conditional Statements</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Loops & Functions</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 6: Python Advanced</h3>
+                <p>Data Structures & OOPs</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Lists, Tuples, Dictionaries, Sets</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Object-Oriented Programming (OOPs)</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> File & Exception Handling</div>
+                    <div class="day-row"><div class="day-badge">Project</div> Student Management System</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 7: SQL Database</h3>
+                <p>Data Management</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Intro to Database & SQL Commands</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Create Database & Tables (DDL, DML)</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> CRUD Operations (Insert, Update, Delete)</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Select Queries, Where, Order By, Joins</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 8: Flask Basics</h3>
+                <p>Web Framework Integration</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> Introduction to Flask & App Structure</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Routing & Templates (Jinja2)</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Handling Forms</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Connecting Flask with MySQL</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 9: Flask Advanced</h3>
+                <p>Authentication & Deployment</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Topic</div> CRUD Operations & Sessions</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Login & Logout System</div>
+                    <div class="day-row"><div class="day-badge">Topic</div> Flash Messages & Project Structure</div>
+                    <div class="day-row"><div class="day-badge">Project</div> User Login & Registration System</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="month-badge"><div class="month-title">Module 3: Major Project</div></div>
+
+        <div class="station" onclick="toggleDetails(this)">
+            <div class="station-marker"></div>
+            <div class="station-card">
+                <h3>Week 10: Full Stack Project</h3>
+                <p>Real-World Application Build</p>
+                <div class="syllabus-details">
+                    <div class="day-row"><div class="day-badge">Option 1</div> Student Management System</div>
+                    <div class="day-row"><div class="day-badge">Option 2</div> Online Course Registration System</div>
+                    <div class="day-row"><div class="day-badge">Option 3</div> Simple E-Commerce Website</div>
+                    <div class="day-row"><div class="day-badge">Option 4</div> Restaurant Booking System</div>
+                    <div class="day-row"><div class="day-badge more">Plus</div> <span class="highlight-text">And Many More...</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ANIMATED POPUP -->
+    <div id="promoPopup" class="promo-popup">
+        <button class="popup-close" onclick="closePopup()">&times;</button>
+        <div class="popup-header">
+            <h3>🚀 Exclusive Course Benefits!</h3>
+        </div>
+        <div class="popup-body">
+            <p>If you are interested, please register through the <strong>Enroll Now</strong> button below. You will also get:</p>
+            <ul class="benefit-list">
+                <li><span>🚀</span> Hosting & Deployment</li>
+                <li><span>📄</span> Resume Building</li>
+                <li><span>💻</span> Live Coding Sessions</li>
+                <li><span>🤝</span> HR & TR Training</li>
+                <li><span>💼</span> Placement Assistance</li>
+            </ul>
+        </div>
+        <div class="popup-footer">
+            👇 CLICK THE BUTTON BELOW TO ENROLL 👇
+        </div>
+    </div>
+
+    <div class="floating-cta">
+        <button class="pulse-btn" onclick="enrollNow()">
+            Enroll Now
+        </button>
+    </div>
+
+    <script>
+        const train = document.getElementById('train');
+        const journey = document.getElementById('journey');
+        const popup = document.getElementById('promoPopup');
+
+        // Train Scroll Logic
+        window.addEventListener('scroll', () => {
+            const rect = journey.getBoundingClientRect();
+            let scrollPos = -rect.top + (window.innerHeight / 2) - 50;
+            const startPos = 0;
+            const endPos = journey.offsetHeight - 100;
+            let newTop = Math.max(startPos, Math.min(scrollPos, endPos));
+            train.style.top = newTop + 'px';
+
+            const stations = document.querySelectorAll('.station');
+            stations.forEach(station => {
+                const stationRect = station.getBoundingClientRect();
+                if (stationRect.top < window.innerHeight * 0.85) {
+                    station.classList.add('visible');
+                }
+            });
+        });
+
+        // Toggle Accordion
+        function toggleDetails(element) {
+            const details = element.querySelector('.syllabus-details');
+            details.classList.toggle('open');
+        }
+
+        // Redirect Function
+        function enrollNow() {
+            var url = "https://forms.gle/ZbVozxudH2JvaMaX8";
+            window.open(url, '_blank');
+        }
+
+        // Popup Logic
+        window.onload = function() {
+            // Show popup after 2 seconds
+            setTimeout(function() {
+                popup.classList.add('show');
+            }, 2000);
+        };
+
+        function closePopup() {
+            popup.classList.remove('show');
+        }
+    </script>
+
+</body>
+</html>
